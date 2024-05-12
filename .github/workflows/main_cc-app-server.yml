@@ -56,6 +56,7 @@ jobs:
   
       - name: Install dependencies and start production server
         run: |
+          cp package.json dist/package.json
           npm install
           npm run start:prod
   
