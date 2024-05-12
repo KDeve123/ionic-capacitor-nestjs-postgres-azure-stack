@@ -56,7 +56,7 @@ jobs:
   
       - name: Install dependencies and start production server
         run: |
-          ls -al
+          echo $DATABASE_URL
           cd canvas-connect-nestjs/
           npm ci
           npm run start:prod
