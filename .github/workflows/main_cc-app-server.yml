@@ -23,7 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
+          npm ci
           npm run build --if-present
           npm run test --if-present
 
@@ -44,23 +44,28 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
-
+  
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: node-app
-
+  
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+  
+      - name: Install dependencies and start production server
+        run: |
+          npm install
+          npm run start:prod
+  
       - name: Login to Azure
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_333D954EC321426CA256F620BBA3391C }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BA36D98CDF9E453997916BE765DC780F }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C57D1DA8DDC842DB80FDE5564822B97D }}
-
+  
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -68,4 +73,5 @@ jobs:
           app-name: 'cc-app-server'
           slot-name: 'Production'
           package: .
+
           
